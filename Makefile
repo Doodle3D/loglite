@@ -1,6 +1,6 @@
-##############################################
-# OpenWrt Makefile for Loglite highlighting script
-##############################################
+####################################################
+# OpenWrt Makefile for Loglite highlighting script #
+####################################################
 include $(TOPDIR)/rules.mk
 
 # Name and release number of this package
@@ -11,15 +11,14 @@ PKG_RELEASE := 1
 # This specifies the directory where we're going to build the program.  
 # The root build directory, $(BUILD_DIR), is by default the build_mipsel 
 # directory in your OpenWrt SDK directory
-PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
+PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/loglite
-	SECTION:=mods
+	SECTION:=utilities
 	CATEGORY:=Utilities
-	MENU:=1
-	TITLE:=Loglite log highlighting script
+	TITLE:=A pattern-based log file highlighting script
 	#URL:=https://github.com/Doodle3D/loglite
 	DEPENDS:=+lua
 endef
@@ -36,7 +35,7 @@ endef
 # In order to just build a simple program that we have just written, it is
 # much easier to do it this way.
 define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
+	$(INSTALL_DIR) $(PKG_BUILD_DIR)
 	$(CP) -r ./src/* $(PKG_BUILD_DIR)/
 	$(CP) -r ./README.md $(PKG_BUILD_DIR)/
 endef
@@ -45,7 +44,7 @@ define Build/Configure
 #	no configuration necessary
 endef
 
-define Build/Compile directives
+define Build/Compile
 #	no compilation necessary (although possible with luac?)
 endef
 
@@ -56,23 +55,13 @@ endef
 # directory) to the install directory.
 
 define Package/loglite/install
-	
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_DIR) $(1)/root
 	$(INSTALL_DIR) $(1)/usr/share/doc
 	
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/loglite.lua $(1)/usr/bin/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/loglite-filters.lua $(1)/root/
 	$(CP) $(PKG_BUILD_DIR)/README.md $(1)/usr/share/doc/
-	$(CP) $(PKG_BUILD_DIR)/loglite-filters.lua $(1)/root/
 endef
-
-#define Package/loglite/postinst
-#endef
-
-#define Package/loglite/prerm
-#endef
-
-#define Package/loglite/postrm
-#endef
 
 $(eval $(call BuildPackage,loglite))
