@@ -28,6 +28,12 @@ define Package/loglite/description
 	A script to highlight log files (or any file in fact) using	Lua patterns.
 endef
 
+# This information is contained within the ipk file and (at least) used by
+# sysupgrade to determine which files to keep (see `opkg list-changed-conffiles`).
+define Package/loglite/conffiles
+/root/loglite-filters.lua
+endef
+
 # Specify what needs to be done to prepare for building the package.
 # In our case, we need to copy the source files to the build directory.
 # This is NOT the default.  The default uses the PKG_SOURCE_URL and the
@@ -59,7 +65,7 @@ define Package/loglite/install
 	$(INSTALL_DIR) $(1)/root
 	$(INSTALL_DIR) $(1)/usr/share/doc
 	
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/loglite.lua $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/loglite $(1)/usr/bin/
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/loglite-filters.lua $(1)/root/
 	$(CP) $(PKG_BUILD_DIR)/README.md $(1)/usr/share/doc/
 endef
